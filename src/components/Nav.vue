@@ -6,7 +6,7 @@
         <Submenu name="1">
           <template slot="title">
             <Icon type="ios-paper"></Icon>
-            地图示例
+            地图示例 
           </template>
           <MenuItem name="mapExample1">加载地图</MenuItem>
           <MenuItem name="mapExample2">设置地图最大、最小级别</MenuItem>
