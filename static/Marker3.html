@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="../static/css/style.css" />
+  <!--加载leaflet引擎必要文件(leaflet.css和leaflet.js)-->
+  <link rel="stylesheet" href="../static/lib/leaflet/leaflet.css" />
+  <script src="../static/lib/leaflet/leaflet.js"></script>
+  <style>
+    #map {
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+
+<!--加载地图投影算法插件-->
+<script src="../static/lib/proj4-compressed.js"></script>
+<script src="../static/src/proj4leaflet.js"></script>
+<!--转换为百度地图投影(EPSG:900913）-->
+<script src="../static/src/convert.js"></script>
+<script>
+
+var map = L.map('map', {
+  crs: crs,
+  maxBoundsViscosity: 0,
+  inertiaDeceleration: 3000, // 惯性运动减速的速率, 以像素/second²。
+  inertiaMaxSpeed: 'Infinity' // 惯性运动的最大速度, 以像素/秒为单位。
+});
+new L.TileLayer(urls, {
+  maxZoom: 18, // 缩放最大值
+  minZoom: 3, // 缩放最小值
+  subdomains: [0,1,2],
+  attribution: 'ⓒ 2018',
+  tms: true
+}).addTo(map)
+map.setView([39.915,116.404], 6)
+
+/*打点*/
+var myRenderer = L.canvas({ padding: 0.5 });
+
+for (var i = 0; i < 100000; i += 1) { // 100k points
+  L.circleMarker(getRandomLatLng(), {
+    renderer: myRenderer
+  }).addTo(map).bindPopup('marker ' + i);
+}
+
+function getRandomLatLng() {
+  return [
+    -90 + 180 * Math.random(),
+    -180 + 360 * Math.random()
+  ];
+}
+</script>
+</body>
+</html>

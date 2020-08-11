@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="../static/css/style.css" />
+  <!--加载leaflet引擎必要文件(leaflet.css和leaflet.js)-->
+  <link rel="stylesheet" href="../static/lib/leaflet/leaflet.css" />
+  <script src="../static/lib/leaflet/leaflet.js"></script>
+  <style>
+    #map {
+      position: relative;
+    }
+    .anim-tooltip{
+      transition: opacity 4.0s linear;/*动画效果*/
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+
+<!--加载地图投影算法插件-->
+<script src="../static/lib/proj4-compressed.js"></script>
+<script src="../static/src/proj4leaflet.js"></script>
+<!--转换为百度地图投影(EPSG:900913）-->
+<script src="../static/src/convert.js"></script>
+<script>
+
+var map = L.map('map', {
+  crs: crs,
+  maxBoundsViscosity: 0,
+  inertiaDeceleration: 3000, // 惯性运动减速的速率, 以像素/second²。
+  inertiaMaxSpeed: 'Infinity' // 惯性运动的最大速度, 以像素/秒为单位。
+}).setView([39.915,116.404 ], 15)
+new L.TileLayer(urls, {
+  maxZoom: 18, // 缩放最大值
+  minZoom: 3, // 缩放最小值
+  subdomains: [0,1,2],
+  attribution: 'ⓒ 2018',
+  tms: true
+}).addTo(map)
+
+
+/*打点*/
+const html = '<p>Hello world!<br />This is a nice popup.</p>';
+function addMarker(point,i){
+  var marker = L.marker(point)
+  const popup = marker.bindPopup(html, { maxHeight: 250, maxWidth: 490, className: 'content', offset: [0, 0] }).on('popupopen', function (params) {
+    console.log(params)
+  });
+  marker.addTo(map)
+  const mypop = L.popup();
+  map.on('click', function (e) {
+    mypop.setLatLng(e.latlng)
+      .setContent('你临幸了这个点：<br>' + e.latlng.toString())
+      .openOn(map);
+  });
+}
+// 随机向地图添加25个标注
+var bounds = map.getBounds();
+var sw = bounds.getSouthWest();
+var ne = bounds.getNorthEast();
+var lngSpan = Math.abs(sw.lng - ne.lng);
+var latSpan = Math.abs(ne.lat - sw.lat);
+for (var i = 0; i < 25; i ++) {
+  var point = new L.latLng(ne.lat - latSpan * (Math.random() * 0.7), sw.lng + lngSpan * (Math.random() * 0.7));
+  addMarker(point,i);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="../static/css/style.css" />
+  <!--加载leaflet引擎必要文件(leaflet.css和leaflet.js)-->
+  <link rel="stylesheet" href="../static/lib/leaflet/leaflet.css" />
+  <script src="../static/lib/leaflet/leaflet.js"></script>
+  <style>
+    #map {
+      position: relative;
+    }
+    #btn1 {
+      position: absolute;
+      left: 30px;
+      bottom: 70px;
+      z-index: 999999;
+      color: #ffffff;
+      font-size: 14px;
+      text-align: center;
+      line-height: 30px;
+    }
+    #btn1 span {
+      background: #495060;
+      width: 100px;
+      height: 30px;
+      margin:  0 2px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<div id="btn1">
+  <span id="act1">添加</span>
+  <span id="act2">删除</span>
+</div>
+<div id="map"></div>
+
+<!--加载地图投影算法插件-->
+<script src="../static/lib/proj4-compressed.js"></script>
+<script src="../static/src/proj4leaflet.js"></script>
+<!--转换为百度地图投影(EPSG:900913）-->
+<script src="../static/src/convert.js"></script>
+<script>
+
+var map = L.map('map', {
+  crs: crs,
+  maxBoundsViscosity: 0,
+  inertiaDeceleration: 3000, // 惯性运动减速的速率, 以像素/second²。
+  inertiaMaxSpeed: 'Infinity' // 惯性运动的最大速度, 以像素/秒为单位。
+});
+new L.TileLayer(urls, {
+  maxZoom: 18, // 缩放最大值
+  minZoom: 3, // 缩放最小值
+  subdomains: [0,1,2],
+  attribution: 'ⓒ 2018',
+  tms: true
+}).addTo(map)
+map.setView([39.915052,116.403954], 15)
+
+/*打点*/
+var marker = L.marker([39.915052,116.403954])
+
+/*画圈*/
+var circle = L.circle([39.915052,116.403954], {
+  color: 'red',
+  fillColor: '#f03',
+  fillOpacity: 0.5,
+  radius: 500
+})
+
+/*多边形*/
+var polygon = L.polygon([
+  [39.915052,116.403954],
+  [39.915052,116.413954],
+  [39.925052,116.403954]
+])
+
+/*添加覆盖物*/
+document.getElementById('act1').addEventListener("click", function () {
+  marker.addTo(map) // 添加点
+  circle.addTo(map) // 添加圆
+  polygon.addTo(map) // 添加多边形
+})
+/*删除覆盖物*/
+document.getElementById('act2').addEventListener("click", function () {
+  marker.remove(map) // 添加点
+  circle.remove(map) // 添加圆
+  polygon.remove(map) // 添加多边形
+})
+</script>
+</body>
+</html>
